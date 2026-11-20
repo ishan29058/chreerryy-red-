@@ -1,0 +1,6 @@
+{
+  "name": "Aurora Café & Kitchen",
+  "description": "An editorial specialty café and all-day restaurant showcase with fluid theme-morphing culinary presentations, curated menu ordering, and table reservations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
