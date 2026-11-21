@@ -19,9 +19,10 @@ export function Footer() {
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white mb-2.5">
             Hours &amp; Location
           </p>
-          <p className="text-white/70">42 Rue de Mercer, Suite 100</p>
+          <p className="text-white/70">42 Rue de Mercer, Suite 100 · SoHo, NY</p>
           <p className="text-white/70">Coffee Bar: Daily 07:30 – 17:00</p>
           <p className="text-white/70">Evening Kitchen: Tue – Sun 17:30 – 22:30</p>
+          <p className="text-white/70 tabular-nums">(212) 555-0148 · hello@auroracafe.example</p>
         </div>
 
         <div className="md:col-span-3 text-sm flex flex-col gap-2">
@@ -35,10 +36,10 @@ export function Footer() {
             All-Day Menu
           </a>
           <a href="#atmosphere" className="text-white/70 hover:text-white transition-colors">
-            Dining Room
+            About &amp; Dining Room
           </a>
-          <a href="#reservations" className="text-white/70 hover:text-white transition-colors">
-            Table Reservations
+          <a href="#visit" className="text-white/70 hover:text-white transition-colors">
+            Hours &amp; Location
           </a>
         </div>
       </div>

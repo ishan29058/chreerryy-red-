@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search, X } from 'lucide-react';
+import { ArrowUpRight, Search, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import {
   MENU_CATEGORIES,
@@ -11,10 +11,9 @@ import { filterMenuItems, formatCurrency } from '../utils/orderLogic';
 
 interface MenuSectionProps {
   onSelectDish: (item: MenuItem) => void;
-  onQuickAdd: (item: MenuItem) => void;
 }
 
-export function MenuSection({ onSelectDish, onQuickAdd }: MenuSectionProps) {
+export function MenuSection({ onSelectDish }: MenuSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState<MenuCategory>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
@@ -197,12 +196,12 @@ export function MenuSection({ onSelectDish, onQuickAdd }: MenuSectionProps) {
 
                     <button
                       type="button"
-                      onClick={() => onQuickAdd(item)}
-                      aria-label={`Add ${item.name} to order`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#141416] text-white text-xs font-semibold whitespace-nowrap shrink-0 hover:bg-[#7A1113] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#141416]"
+                      onClick={() => onSelectDish(item)}
+                      aria-label={`View tasting notes for ${item.name}`}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#141416] hover:text-[#7A1113] whitespace-nowrap shrink-0 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#141416]"
                     >
-                      <Plus className="w-3.5 h-3.5" strokeWidth={2.3} />
-                      <span>Add to Order</span>
+                      <span>View Details</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2.2} />
                     </button>
                   </div>
                 </div>

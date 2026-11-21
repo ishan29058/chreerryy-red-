@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Menu, Search, ShoppingBag, X } from 'lucide-react';
+import { Menu, Search, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface NavbarProps {
   isLightHero: boolean;
-  cartCount: number;
-  onOpenCart: () => void;
   onOpenSearch: () => void;
 }
 
 const NAV_LINKS = [
   { label: 'Showcase', href: '#showcase' },
   { label: 'Menu', href: '#menu' },
-  { label: 'Atmosphere', href: '#atmosphere' },
-  { label: 'Reservations', href: '#reservations' },
+  { label: 'About', href: '#atmosphere' },
+  { label: 'Visit Us', href: '#visit' },
 ];
 
 export function Navbar({
   isLightHero,
-  cartCount,
-  onOpenCart,
   onOpenSearch,
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -92,29 +88,16 @@ export function Navbar({
             <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
           </button>
 
-          <button
-            type="button"
-            onClick={onOpenCart}
-            aria-label={`Open order bag, ${cartCount} ${cartCount === 1 ? 'item' : 'items'}`}
-            className={`h-10 px-4 rounded-full flex items-center gap-2 text-xs font-semibold tracking-wide whitespace-nowrap shrink-0 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 ${
+          <a
+            href="#menu"
+            className={`h-10 px-5 rounded-full inline-flex items-center justify-center text-xs font-semibold tracking-wide whitespace-nowrap shrink-0 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 ${
               useDarkText
                 ? 'bg-[#141416] text-white hover:bg-[#2A2A2E] focus-visible:outline-[#141416]'
                 : 'bg-white text-[#141416] hover:bg-white/90 focus-visible:outline-white'
             }`}
           >
-            <ShoppingBag className="w-3.5 h-3.5" strokeWidth={2} />
-            <span>Order Bag</span>
-            <span
-              data-testid="nav-cart-count"
-              className={`tabular-nums inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[11px] font-bold ${
-                useDarkText
-                  ? 'bg-white/18 text-white'
-                  : 'bg-[#141416]/12 text-[#141416]'
-              }`}
-            >
-              {cartCount}
-            </span>
-          </button>
+            Explore Menu
+          </a>
 
           <button
             type="button"

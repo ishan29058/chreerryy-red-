@@ -236,17 +236,3 @@ export const MENU_CATEGORIES: MenuCategory[] = [
   'Evening Plates',
 ];
 
-export const RESERVATION_TIME_SLOTS = [
-  '09:00 AM',
-  '11:30 AM',
-  '01:00 PM',
-  '05:30 PM',
-  '07:00 PM',
-  '08:30 PM',
-];
-
-export const SEATING_PREFERENCES = [
-  'Main Dining Room',
-  'Travertine Coffee Bar',
-  'Sunlit Courtyard',
-];

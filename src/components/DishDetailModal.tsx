@@ -1,28 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Minus, Plus, X } from 'lucide-react';
+import { useEffect } from 'react';
+import { X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import type { DishOption, MenuItem } from '../data/menuData';
+import type { MenuItem } from '../data/menuData';
 import { formatCurrency } from '../utils/orderLogic';
 
 interface DishDetailModalProps {
   item: MenuItem | null;
   onClose: () => void;
-  onAddToCart: (item: MenuItem, option: DishOption, quantity: number) => void;
 }
 
-export function DishDetailModal({
-  item,
-  onClose,
-  onAddToCart,
-}: DishDetailModalProps) {
-  const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-
-  useEffect(() => {
-    setSelectedOptionIdx(0);
-    setQuantity(1);
-  }, [item?.id]);
-
+export function DishDetailModal({ item, onClose }: DishDetailModalProps) {
   useEffect(() => {
     if (!item) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -32,13 +19,9 @@ export function DishDetailModal({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [item, onClose]);
 
-  const activeOption = item ? item.options[selectedOptionIdx] ?? item.options[0] : null;
-  const lineTotal =
-    item && activeOption ? (item.price + activeOption.priceDelta) * quantity : 0;
-
   return (
     <AnimatePresence>
-      {item && activeOption && (
+      {item && (
         <div
           role="dialog"
           aria-modal="true"
@@ -79,7 +62,7 @@ export function DishDetailModal({
               />
             </div>
 
-            {/* Dish Details & Contiguous Purchase Module */}
+            {/* Presentation Details */}
             <div className="md:col-span-7 p-6 sm:p-8 overflow-y-auto flex flex-col justify-between">
               <div>
                 <p className="text-xs font-medium text-[#141416]/55">
@@ -90,18 +73,23 @@ export function DishDetailModal({
                   {item.servingInfo}
                 </p>
 
-                <h3
-                  id="dish-modal-title"
-                  className="mt-2 font-display text-3xl sm:text-4xl font-bold text-[#141416] leading-tight"
-                >
-                  {item.name}
-                </h3>
+                <div className="mt-2 flex items-baseline justify-between gap-4 pr-8">
+                  <h3
+                    id="dish-modal-title"
+                    className="font-display text-3xl sm:text-4xl font-bold text-[#141416] leading-tight"
+                  >
+                    {item.name}
+                  </h3>
+                  <span className="text-lg font-semibold tabular-nums text-[#141416] shrink-0">
+                    {formatCurrency(item.price)}
+                  </span>
+                </div>
 
                 <p className="mt-3 text-sm text-[#141416]/75 leading-relaxed">
                   {item.description}
                 </p>
 
-                <div className="mt-5 pt-4 border-t border-black/8 space-y-1.5 text-xs text-[#141416]/68">
+                <div className="mt-5 pt-4 border-t border-black/8 space-y-2 text-xs text-[#141416]/70">
                   <p>
                     <span className="font-semibold text-[#141416]">
                       Tasting Notes:
@@ -110,79 +98,45 @@ export function DishDetailModal({
                   </p>
                   <p>
                     <span className="font-semibold text-[#141416]">
-                      Kitchen Note:
+                      Kitchen Pairing:
                     </span>{' '}
                     {item.pairing}
                   </p>
                 </div>
 
-                {/* Preparation / Option Selector */}
-                <fieldset className="mt-6">
-                  <legend className="text-xs font-semibold uppercase tracking-[0.08em] text-[#141416]/65 mb-2.5">
-                    Select Preparation
-                  </legend>
-                  <div className="space-y-2">
-                    {item.options.map((opt, idx) => {
-                      const selected = idx === selectedOptionIdx;
-                      return (
-                        <button
-                          key={opt.label}
-                          type="button"
-                          onClick={() => setSelectedOptionIdx(idx)}
-                          aria-pressed={selected}
-                          className={`w-full px-4 py-3 rounded-xl border text-left flex items-center justify-between text-sm transition-colors ${
-                            selected
-                              ? 'border-[#141416] bg-white font-semibold text-[#141416]'
-                              : 'border-black/10 bg-white/50 text-[#141416]/75 hover:bg-white'
-                          }`}
-                        >
-                          <span>{opt.label}</span>
-                          <span className="tabular-nums text-xs text-[#141416]/65">
-                            {opt.priceDelta > 0
-                              ? `+${formatCurrency(opt.priceDelta)}`
-                              : 'Included'}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </fieldset>
+                {/* Static Preparation Styles */}
+                <div className="mt-6 pt-5 border-t border-black/8">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#141416]/60 mb-3">
+                    House Preparations
+                  </p>
+                  <ul className="divide-y divide-black/6 border-y border-black/6">
+                    {item.options.map((opt) => (
+                      <li
+                        key={opt.label}
+                        className="py-2.5 flex items-center justify-between text-sm text-[#141416]/82"
+                      >
+                        <span>{opt.label}</span>
+                        <span className="tabular-nums text-xs text-[#141416]/55">
+                          {opt.priceDelta > 0
+                            ? `+${formatCurrency(opt.priceDelta)}`
+                            : 'House Standard'}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
-              {/* Quantity + Add CTA */}
-              <div className="mt-7 pt-5 border-t border-black/10 flex items-center gap-4">
-                <div className="inline-flex items-center rounded-full border border-black/15 bg-white px-1.5 h-11">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    aria-label="Decrease quantity"
-                    className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/5"
-                  >
-                    <Minus className="w-3.5 h-3.5" />
-                  </button>
-                  <span className="w-8 text-center text-sm font-semibold tabular-nums">
-                    {quantity}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity((q) => q + 1)}
-                    aria-label="Increase quantity"
-                    className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/5"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
+              <div className="mt-7 pt-5 border-t border-black/10 flex items-center justify-between gap-4">
+                <p className="text-xs text-[#141416]/58">
+                  Prepared fresh to order in our dining room.
+                </p>
                 <button
                   type="button"
-                  onClick={() => {
-                    onAddToCart(item, activeOption, quantity);
-                    onClose();
-                  }}
-                  className="flex-1 h-11 px-6 rounded-full bg-[#141416] text-white text-sm font-semibold hover:bg-[#7A1113] transition-colors flex items-center justify-between"
+                  onClick={onClose}
+                  className="h-10 px-6 rounded-full bg-[#141416] text-white text-xs font-semibold uppercase tracking-[0.08em] hover:bg-[#7A1113] transition-colors shrink-0"
                 >
-                  <span>Add to Order</span>
-                  <span className="tabular-nums">{formatCurrency(lineTotal)}</span>
+                  Close
                 </button>
               </div>
             </div>

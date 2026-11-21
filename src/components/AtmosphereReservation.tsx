@@ -1,54 +1,15 @@
 import { useState } from 'react';
-import { Calendar, CheckCircle2, Clock, Users } from 'lucide-react';
-import {
-  CAFE_INTERIOR_IMAGE,
-  RESERVATION_TIME_SLOTS,
-  SEATING_PREFERENCES,
-} from '../data/menuData';
-import {
-  generateConfirmationCode,
-  validateReservationForm,
-  type ReservationFormValues,
-} from '../utils/orderLogic';
+import { ArrowUpRight, Clock, Mail, MapPin, Phone } from 'lucide-react';
+import { CAFE_INTERIOR_IMAGE } from '../data/menuData';
 
-interface ConfirmedReservation {
-  code: string;
-  values: ReservationFormValues;
-}
+const SERVICE_HOURS = [
+  { label: 'Morning Coffee Bar & Bakery', hours: 'Daily · 07:30 – 17:00' },
+  { label: 'All-Day Kitchen', hours: 'Daily · 08:30 – 16:00' },
+  { label: 'Evening Dining Room', hours: 'Tue – Sun · 17:30 – 22:30' },
+];
 
 export function AtmosphereReservation() {
-  const [form, setForm] = useState<ReservationFormValues>({
-    guestName: '',
-    email: '',
-    date: '2026-11-24',
-    timeSlot: '07:00 PM',
-    partySize: 2,
-    seating: SEATING_PREFERENCES[0],
-    notes: '',
-  });
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof ReservationFormValues, string>>
-  >({});
-  const [confirmed, setConfirmed] = useState<ConfirmedReservation | null>(null);
   const [imgError, setImgError] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const validation = validateReservationForm(form);
-    if (!validation.isValid) {
-      setErrors(validation.errors);
-      return;
-    }
-    setErrors({});
-    const seed =
-      form.guestName.length * 31 +
-      form.partySize * 17 +
-      form.timeSlot.charCodeAt(0);
-    setConfirmed({
-      code: generateConfirmationCode('RES', seed),
-      values: { ...form },
-    });
-  };
 
   return (
     <section
@@ -61,7 +22,7 @@ export function AtmosphereReservation() {
           <div className="lg:col-span-6 flex flex-col justify-between gap-6">
             <div>
               <p className="text-xs font-semibold tracking-[0.14em] uppercase text-[#7A1113] mb-3">
-                The Dining Room &amp; Roastery
+                About Aurora
               </p>
               <h2 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-[#141416] leading-[1.02]">
                 Designed for Slow Mornings &amp; Candlelit Evenings
@@ -117,270 +78,136 @@ export function AtmosphereReservation() {
             </div>
           </div>
 
-          {/* Right Column: Interactive Table Reservation Form */}
+          {/* Right Column: Static Restaurant Information — Hours, Location & Contact */}
           <div
-            id="reservations"
+            id="visit"
+            data-testid="visit-info-card"
             className="lg:col-span-6 bg-white rounded-3xl p-7 sm:p-10 border border-black/[0.06] flex flex-col justify-between"
           >
-            {confirmed ? (
-              <div
-                data-testid="reservation-confirmed"
-                className="my-auto py-8 flex flex-col items-start"
-              >
-                <div className="w-12 h-12 rounded-full bg-[#141416] text-white flex items-center justify-center mb-5">
-                  <CheckCircle2 className="w-6 h-6" />
+            <div>
+              <p className="text-xs font-semibold tracking-[0.14em] uppercase text-[#7A1113]">
+                Visit Us
+              </p>
+              <h3 className="mt-2 font-display text-3xl sm:text-4xl font-bold text-[#141416]">
+                Hours, Location &amp; Contact
+              </h3>
+              <p className="mt-2 text-sm text-[#141416]/68 leading-relaxed">
+                Join us at our travertine espresso counter for morning pastries,
+                or settle into the sunlit courtyard and main dining room for
+                lunch and evening service.
+              </p>
+
+              <div className="mt-8 divide-y divide-black/8 border-y border-black/8">
+                {/* Address Block */}
+                <div className="py-5 flex items-start gap-4">
+                  <MapPin
+                    className="w-5 h-5 text-[#7A1113] shrink-0 mt-0.5"
+                    strokeWidth={1.8}
+                  />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#141416]/55">
+                      Address
+                    </p>
+                    <p className="mt-1 text-base font-semibold text-[#141416]">
+                      42 Rue de Mercer, Suite 100
+                    </p>
+                    <p className="text-sm text-[#141416]/68 mt-0.5">
+                      SoHo · New York, NY 10013 — Steps from Mercer &amp; Broome
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7A1113]">
-                  Table Reserved
-                </p>
-                <h3 className="mt-2 font-display text-4xl font-bold text-[#141416]">
-                  We Look Forward to Hosting You
-                </h3>
-                <p className="mt-2 text-sm text-[#141416]/70">
-                  Confirmation code{' '}
-                  <strong className="font-semibold text-[#141416] tabular-nums">
-                    {confirmed.code}
-                  </strong>{' '}
-                  has been recorded for {confirmed.values.guestName}.
-                </p>
 
-                <dl className="mt-6 w-full divide-y divide-black/8 border-y border-black/8 text-sm">
-                  <div className="py-3 flex justify-between">
-                    <dt className="text-[#141416]/58">Date &amp; Time</dt>
-                    <dd className="font-medium tabular-nums">
-                      {confirmed.values.date} · {confirmed.values.timeSlot}
-                    </dd>
+                {/* Opening Hours Block */}
+                <div className="py-5 flex items-start gap-4">
+                  <Clock
+                    className="w-5 h-5 text-[#7A1113] shrink-0 mt-0.5"
+                    strokeWidth={1.8}
+                  />
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#141416]/55 mb-2.5">
+                      Opening Hours
+                    </p>
+                    <dl className="space-y-2 text-sm">
+                      {SERVICE_HOURS.map((row) => (
+                        <div
+                          key={row.label}
+                          className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1"
+                        >
+                          <dt className="text-[#141416]/75">{row.label}</dt>
+                          <dd className="font-semibold tabular-nums text-[#141416]">
+                            {row.hours}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
                   </div>
-                  <div className="py-3 flex justify-between">
-                    <dt className="text-[#141416]/58">Guests</dt>
-                    <dd className="font-medium tabular-nums">
-                      {confirmed.values.partySize}{' '}
-                      {confirmed.values.partySize === 1 ? 'Guest' : 'Guests'}
-                    </dd>
-                  </div>
-                  <div className="py-3 flex justify-between">
-                    <dt className="text-[#141416]/58">Seating</dt>
-                    <dd className="font-medium">{confirmed.values.seating}</dd>
-                  </div>
-                  <div className="py-3 flex justify-between">
-                    <dt className="text-[#141416]/58">Email</dt>
-                    <dd className="font-medium">{confirmed.values.email}</dd>
-                  </div>
-                </dl>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setConfirmed(null)}
-                  className="mt-7 px-6 py-3 rounded-full bg-[#141416] text-white text-xs font-semibold uppercase tracking-[0.08em] hover:bg-[#7A1113] transition-colors"
-                >
-                  Make Another Reservation
-                </button>
+                {/* Contact Block */}
+                <div className="py-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="flex items-start gap-3.5">
+                    <Phone
+                      className="w-5 h-5 text-[#7A1113] shrink-0 mt-0.5"
+                      strokeWidth={1.8}
+                    />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#141416]/55">
+                        Telephone
+                      </p>
+                      <a
+                        href="tel:+12125550148"
+                        className="mt-1 block text-sm font-semibold tabular-nums text-[#141416] hover:text-[#7A1113] transition-colors"
+                      >
+                        (212) 555-0148
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3.5">
+                    <Mail
+                      className="w-5 h-5 text-[#7A1113] shrink-0 mt-0.5"
+                      strokeWidth={1.8}
+                    />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#141416]/55">
+                        Hospitality &amp; Events
+                      </p>
+                      <a
+                        href="mailto:hello@auroracafe.example"
+                        className="mt-1 block text-sm font-semibold text-[#141416] hover:text-[#7A1113] transition-colors break-all"
+                      >
+                        hello@auroracafe.example
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} noValidate className="flex flex-col h-full justify-between">
-                <div>
-                  <p className="text-xs font-semibold tracking-[0.14em] uppercase text-[#7A1113]">
-                    Reservations
-                  </p>
-                  <h3 className="mt-2 font-display text-3xl sm:text-4xl font-bold text-[#141416]">
-                    Reserve Your Table
-                  </h3>
-                  <p className="mt-1.5 text-sm text-[#141416]/65">
-                    Walk-ins are always welcome at our coffee bar. Book ahead for
-                    brunch and evening dining.
-                  </p>
 
-                  <div className="mt-7 space-y-5">
-                    {/* Guest Name & Email */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          htmlFor="res-name"
-                          className="block text-xs font-semibold text-[#141416]/80 mb-1.5"
-                        >
-                          Full Name
-                        </label>
-                        <input
-                          id="res-name"
-                          type="text"
-                          value={form.guestName}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              guestName: e.target.value,
-                            }))
-                          }
-                          placeholder="Clara Moreau"
-                          className="w-full h-11 px-3.5 rounded-xl bg-[#F6F5F0] border border-black/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#141416]"
-                        />
-                        {errors.guestName && (
-                          <p
-                            role="alert"
-                            className="mt-1 text-xs text-[#9E1928] font-medium"
-                          >
-                            {errors.guestName}
-                          </p>
-                        )}
-                      </div>
+              {/* Dining Spaces Note */}
+              <div className="mt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#141416]/55">
+                  Dining Spaces
+                </p>
+                <p className="mt-1.5 text-sm text-[#141416]/72 leading-relaxed">
+                  Main Dining Room · Travertine Coffee Bar · Sunlit Courtyard.
+                  Private seasonal tastings and intimate gatherings of up to 24
+                  guests are hosted by arrangement with our hospitality team.
+                </p>
+              </div>
+            </div>
 
-                      <div>
-                        <label
-                          htmlFor="res-email"
-                          className="block text-xs font-semibold text-[#141416]/80 mb-1.5"
-                        >
-                          Email Address
-                        </label>
-                        <input
-                          id="res-email"
-                          type="email"
-                          value={form.email}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              email: e.target.value,
-                            }))
-                          }
-                          placeholder="clara@example.com"
-                          className="w-full h-11 px-3.5 rounded-xl bg-[#F6F5F0] border border-black/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#141416]"
-                        />
-                        {errors.email && (
-                          <p
-                            role="alert"
-                            className="mt-1 text-xs text-[#9E1928] font-medium"
-                          >
-                            {errors.email}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Date & Party Size */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          htmlFor="res-date"
-                          className="flex items-center gap-1.5 text-xs font-semibold text-[#141416]/80 mb-1.5"
-                        >
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>Date</span>
-                        </label>
-                        <input
-                          id="res-date"
-                          type="date"
-                          value={form.date}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              date: e.target.value,
-                            }))
-                          }
-                          className="w-full h-11 px-3.5 rounded-xl bg-[#F6F5F0] border border-black/10 text-sm tabular-nums focus:outline-none focus:ring-2 focus:ring-[#141416]"
-                        />
-                        {errors.date && (
-                          <p
-                            role="alert"
-                            className="mt-1 text-xs text-[#9E1928] font-medium"
-                          >
-                            {errors.date}
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor="res-party"
-                          className="flex items-center gap-1.5 text-xs font-semibold text-[#141416]/80 mb-1.5"
-                        >
-                          <Users className="w-3.5 h-3.5" />
-                          <span>Party Size</span>
-                        </label>
-                        <select
-                          id="res-party"
-                          value={form.partySize}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              partySize: Number(e.target.value),
-                            }))
-                          }
-                          className="w-full h-11 px-3.5 rounded-xl bg-[#F6F5F0] border border-black/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#141416]"
-                        >
-                          {[1, 2, 3, 4, 5, 6, 8, 10].map((num) => (
-                            <option key={num} value={num}>
-                              {num} {num === 1 ? 'Guest' : 'Guests'}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Time Slot Selector */}
-                    <div>
-                      <span className="flex items-center gap-1.5 text-xs font-semibold text-[#141416]/80 mb-2">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>Preferred Time</span>
-                      </span>
-                      <div className="grid grid-cols-3 gap-2">
-                        {RESERVATION_TIME_SLOTS.map((slot) => {
-                          const active = form.timeSlot === slot;
-                          return (
-                            <button
-                              key={slot}
-                              type="button"
-                              onClick={() =>
-                                setForm((prev) => ({ ...prev, timeSlot: slot }))
-                              }
-                              aria-pressed={active}
-                              className={`h-10 rounded-xl text-xs font-semibold tabular-nums transition-colors ${
-                                active
-                                  ? 'bg-[#141416] text-white'
-                                  : 'bg-[#F6F5F0] text-[#141416]/80 hover:bg-black/8'
-                              }`}
-                            >
-                              {slot}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Seating Preference */}
-                    <div>
-                      <label
-                        htmlFor="res-seating"
-                        className="block text-xs font-semibold text-[#141416]/80 mb-1.5"
-                      >
-                        Seating Preference
-                      </label>
-                      <select
-                        id="res-seating"
-                        value={form.seating}
-                        onChange={(e) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            seating: e.target.value,
-                          }))
-                        }
-                        className="w-full h-11 px-3.5 rounded-xl bg-[#F6F5F0] border border-black/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#141416]"
-                      >
-                        {SEATING_PREFERENCES.map((area) => (
-                          <option key={area} value={area}>
-                            {area}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="mt-7 w-full h-12 rounded-full bg-[#141416] text-white text-xs sm:text-sm font-semibold uppercase tracking-[0.1em] hover:bg-[#7A1113] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#141416]"
-                >
-                  Confirm Reservation
-                </button>
-              </form>
-            )}
+            <div className="mt-8 pt-6 border-t border-black/8 flex flex-wrap items-center justify-between gap-4">
+              <p className="text-xs text-[#141416]/58">
+                Walk-ins welcome daily at our coffee bar and courtyard.
+              </p>
+              <a
+                href="#menu"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#141416] text-white text-xs font-semibold uppercase tracking-[0.08em] hover:bg-[#7A1113] transition-colors whitespace-nowrap shrink-0"
+              >
+                <span>View Full Menu</span>
+                <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2.2} />
+              </a>
+            </div>
           </div>
         </div>
       </div>

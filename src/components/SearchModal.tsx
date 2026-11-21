@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Plus, Search, X } from 'lucide-react';
+import { ArrowUpRight, Search, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { MENU_ITEMS, type MenuItem } from '../data/menuData';
 import { filterMenuItems, formatCurrency } from '../utils/orderLogic';
@@ -8,14 +8,12 @@ interface SearchModalProps {
   open: boolean;
   onClose: () => void;
   onSelectDish: (item: MenuItem) => void;
-  onQuickAdd: (item: MenuItem) => void;
 }
 
 export function SearchModal({
   open,
   onClose,
   onSelectDish,
-  onQuickAdd,
 }: SearchModalProps) {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -93,18 +91,16 @@ export function SearchModal({
                 </p>
               ) : (
                 results.map((item) => (
-                  <div
+                  <button
                     key={item.id}
-                    className="px-5 py-3.5 flex items-center justify-between gap-4 hover:bg-white transition-colors"
+                    type="button"
+                    onClick={() => {
+                      onSelectDish(item);
+                      onClose();
+                    }}
+                    className="w-full px-5 py-3.5 flex items-center justify-between gap-4 text-left hover:bg-white transition-colors"
                   >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onSelectDish(item);
-                        onClose();
-                      }}
-                      className="flex items-center gap-3.5 text-left flex-1 min-w-0"
-                    >
+                    <div className="flex items-center gap-3.5 flex-1 min-w-0">
                       <img
                         src={item.image}
                         alt={item.name}
@@ -115,25 +111,17 @@ export function SearchModal({
                         <p className="text-sm font-semibold text-[#141416] truncate">
                           {item.name}
                         </p>
-                        <p className="text-xs text-[#141416]/55 truncate">
+                        <p className="text-xs text-[#141416]/55 truncate tabular-nums">
                           {item.category} · {formatCurrency(item.price)}
                         </p>
                       </div>
-                    </button>
+                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onQuickAdd(item);
-                        onClose();
-                      }}
-                      aria-label={`Add ${item.name} to order`}
-                      className="h-8 px-3 rounded-full bg-[#141416] text-white text-xs font-semibold inline-flex items-center gap-1 hover:bg-[#7A1113] transition-colors shrink-0"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Add</span>
-                    </button>
-                  </div>
+                    <span className="text-xs font-semibold text-[#141416]/65 inline-flex items-center gap-1 shrink-0">
+                      <span>Details</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </span>
+                  </button>
                 ))
               )}
             </div>

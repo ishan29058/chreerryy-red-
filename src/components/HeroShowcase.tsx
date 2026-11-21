@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   AnimatePresence,
   motion,
@@ -14,14 +14,12 @@ interface HeroShowcaseProps {
   activeIndex: number;
   onChangeIndex: (nextIndex: number) => void;
   onInspectDish: (menuItemId: string) => void;
-  onQuickAdd: (menuItemId: string) => void;
 }
 
 export function HeroShowcase({
   activeIndex,
   onChangeIndex,
   onInspectDish,
-  onQuickAdd,
 }: HeroShowcaseProps) {
   const [direction, setDirection] = useState<1 | -1>(1);
   const [imageErrorMap, setImageErrorMap] = useState<Record<string, boolean>>({});
@@ -171,7 +169,7 @@ export function HeroShowcase({
                       : 'bg-white text-[#141416] hover:bg-white/92 focus-visible:outline-white'
                   }`}
                 >
-                  <span>Order Now</span>
+                  <span>Explore Dish</span>
                   <ArrowRight
                     className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
                     strokeWidth={2.2}
@@ -328,10 +326,10 @@ export function HeroShowcase({
             <span>07:30 – 22:30</span>
           </div>
           <a
-            href="#reservations"
+            href="#visit"
             className={`text-xs font-semibold underline underline-offset-4 whitespace-nowrap transition-opacity hover:opacity-75 ${primaryTextClass}`}
           >
-            Book a Table
+            Hours &amp; Location
           </a>
         </div>
 
@@ -354,9 +352,13 @@ export function HeroShowcase({
             {HERO_SLIDES.map((slide, idx) => {
               const isActive = idx === activeIndex;
               return (
-                <div
+                <button
                   key={slide.id}
-                  className={`relative min-w-0 rounded-2xl transition-all duration-300 ${
+                  type="button"
+                  onClick={() => handleSelectSlide(idx)}
+                  aria-label={`Select ${slide.cardTitle}, ${formatCurrency(slide.price)}`}
+                  aria-pressed={isActive}
+                  className={`relative min-w-0 w-full text-left p-2 sm:p-2.5 flex items-center gap-2.5 rounded-2xl transition-all duration-300 backdrop-blur-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current ${
                     isActive
                       ? isLight
                         ? 'bg-[#141416]/10 ring-1 ring-[#141416]/45 shadow-md -translate-y-1'
@@ -364,51 +366,29 @@ export function HeroShowcase({
                       : isLight
                         ? 'bg-[#141416]/5 hover:bg-[#141416]/8 border border-[#141416]/10'
                         : 'bg-white/8 hover:bg-white/14 border border-white/12'
-                  } backdrop-blur-md`}
+                  }`}
                 >
-                  <button
-                    type="button"
-                    onClick={() => handleSelectSlide(idx)}
-                    aria-label={`Select ${slide.cardTitle}, ${formatCurrency(slide.price)}`}
-                    aria-pressed={isActive}
-                    className="w-full text-left p-2 sm:p-2.5 pr-9 flex items-center gap-2 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-                  >
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 bg-black/15">
-                      <img
-                        src={slide.image}
-                        alt=""
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className={`text-xs font-semibold truncate ${primaryTextClass}`}
-                      >
-                        {slide.cardTitle}
-                      </p>
-                      <p
-                        className={`text-xs tabular-nums mt-0.5 font-medium ${secondaryTextClass}`}
-                      >
-                        {formatCurrency(slide.price)}
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* Quick Add-to-Bag Icon Button (Sibling to prevent nested button HTML) */}
-                  <button
-                    type="button"
-                    onClick={() => onQuickAdd(slide.menuItemId)}
-                    aria-label={`Quick add ${slide.cardTitle} to order bag`}
-                    className={`absolute right-2 bottom-2 h-6 w-6 sm:h-7 sm:w-7 rounded-full flex items-center justify-center transition-transform duration-150 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 ${
-                      isLight
-                        ? 'bg-[#141416] text-white hover:bg-[#2B2B30] focus-visible:outline-[#141416]'
-                        : 'bg-white text-[#141416] hover:bg-white/90 focus-visible:outline-white'
-                    }`}
-                  >
-                    <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-                  </button>
-                </div>
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 bg-black/15">
+                    <img
+                      src={slide.image}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className={`text-xs font-semibold truncate ${primaryTextClass}`}
+                    >
+                      {slide.cardTitle}
+                    </p>
+                    <p
+                      className={`text-xs tabular-nums mt-0.5 font-medium ${secondaryTextClass}`}
+                    >
+                      {formatCurrency(slide.price)}
+                    </p>
+                  </div>
+                </button>
               );
             })}
           </div>
